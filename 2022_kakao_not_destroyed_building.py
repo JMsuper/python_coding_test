@@ -1,62 +1,29 @@
-import heapq
-
 def solution(board, skill):
     answer = 0
-    # 이거 분할정복이다
 
-    # 스킬들이 한 행만 다루도록 자르기.
-    # 즉, 스킬을 1차원으로 변경
+    # 누적합으로 해결한다.
+    x_len = len(board)
     y_len = len(board[0])
-    divided_skill = []
+    sum_board = [[0 for _ in range(y_len + 1)] for _ in range(x_len + 1)]
+
     for t, r1, c1, r2, c2, degree in skill:
-        for i in range(r2-r1+1):
-            start = (r1 + i) * y_len + c1
-            end = (r1 + i) * y_len + c2
-            if t == 1:
-                heapq.heappush(divided_skill,[start,end,-degree])
-            else:
-                heapq.heappush(divided_skill,[start,end,degree])
-    print(divided_skill)
+        if t == 1:
+            degree = -degree
+        sum_board[r1][c1] += degree
+        sum_board[r2+1][c2+1] += degree
+        sum_board[r1][c2+1] += -degree
+        sum_board[r2+1][c1] += -degree
 
-    one_demension_skill = []
-    # 겹치는 영역 합치거나 나누기
-    while divided_skill:
-        front = heapq.heappop(divided_skill)
-        if not divided_skill:
-            one_demension_skill.append(front)
-            break
-        if front[1] >= divided_skill[0][0]:
-            back = heapq.heappop(divided_skill)
-            if front[0] == back[0] and front[1] == back[1]:
-                front[2] += back[2]
-                heapq.heappush(divided_skill,front)
-                continue
-            elif front[0] == back[0]:
-                front[2] += back[2]
-                back[0] = front[1] + 1
-                heapq.heappush(divided_skill,front)
-                heapq.heappush(divided_skill,back)
-                continue
-            else:
-                temp = [back[0],front[1],front[2]]
-                front[1] = temp[0] - 1
-                one_demension_skill.append(front)
-                heapq.heappush(divided_skill,temp)
-                heapq.heappush(divided_skill,back)
-        else:
-            one_demension_skill.append(front)
-
-    print(one_demension_skill)
-    for start, end, degree in one_demension_skill:
-        x = start // y_len
-        y_start = start % y_len
-        y_end = end % y_len
-        for i in range(y_start,y_end+1):
-            board[x][i] += degree
-    print(board)
+    for i in range(1,y_len+1):
+        for j in range(0,x_len+1):
+            sum_board[j][i] += sum_board[j][i-1]
+    for i in range(1,x_len+1):
+        for j in range(0,y_len+1):
+            sum_board[i][j] += sum_board[i-1][j]
+    
     for i in range(len(board)):
         for j in range(len(board[0])):
-            if board[i][j] > 0:
+            if board[i][j] + sum_board[i][j] > 0:
                 answer += 1
     return answer
 
