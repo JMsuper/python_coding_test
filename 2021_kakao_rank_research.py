@@ -2,37 +2,32 @@ import bisect
 
 def solution(info, query):
     answer = []
+    info_dict = {}
     
-    modified_info = []
+    for lang in ["cpp","java","python","-"]:
+        for job in ["backend","frontend","-"]:
+            for period in ["junior","senior","-"]:
+                for food in ["chicken","pizza","-"]:
+                    info_dict[lang + job + period + food] = []
+                    
     for item in info:
-        lang, job, period, food, score = item.split()
-        modified_info.append([lang,job,period,food,int(score)])
+        item = item.split()
+        for lang in [item[0],'-']:
+            for job in [item[1],'-']:
+                for period in [item[2],'-']:
+                    for food in [item[3],'-']:
+                        info_dict[lang + job + period + food].append(int(item[4]))
     
-    modified_info.sort(key=lambda x:x[4])
-    score_rank_list = [item[4] for item in modified_info]
-    
+    for key, value in info_dict.items():
+        value.sort()
+        
     for item in query:
-        query_item = item.split();
+        item = item.replace(" and ","").split()
+        query_q = item[0]
+        query_score = int(item[1])
         
-        lang = query_item[0]
-        job = query_item[2]
-        period = query_item[4]
-        food = query_item[6]
-        score = int(query_item[7])
-        
-        index = bisect.bisect_left(score_rank_list,score)
-        
-        cnt = 0
-        for i in range(index,len(modified_info)):
-            if lang != '-' and modified_info[i][0] != lang:
-                continue
-            if job != '-' and modified_info[i][1] != job:
-                continue
-            if period != '-' and modified_info[i][2] != period:
-                continue
-            if food != '-' and modified_info[i][3] != food:
-                continue
-            cnt += 1
+        idx = bisect.bisect_left(info_dict[query_q],query_score)
+        cnt = len(info_dict[query_q]) - idx
         answer.append(cnt)
 
     return answer
