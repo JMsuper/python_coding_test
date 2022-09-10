@@ -1,14 +1,8 @@
-import heapq
+import bisect
 
 def main():
-    queue = []
-    heapq.heappush(queue,[1,5])
-    heapq.heappush(queue,[2,6])
-    heapq.heappush(queue,[2,4,2])
-    heapq.heappush(queue,[2,4,1])
-    
-    while queue:
-        print(heapq.heappop(queue))
+    test_l = [0,2,4,5,6,7,8,9]
+    print(bisect.bisect_left(test_l,6))
 
 if __name__ == "__main__":
     main()
