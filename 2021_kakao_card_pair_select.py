@@ -1,21 +1,11 @@
 from itertools import permutations
 from collections import deque
 
-# 모든 경우의 수 찾기 -> ok
-# 각 경우 실행
-# BFS를 통한 최단 경로 찾기
-
-# 각 경우의 수를 실행할 떄 마다 최솟값 갱신
-# 만약 특정 경우를 실행시키는 데 현재 최솟값 보다 클 경우 해당 경우 종료
-
 INF = 10000000
 dx = [-1,1,0,0]
 dy = [0,0,-1,1]
 
 def recursive(card_dict,subject_list,subject, cur_subject,i):
-    # 정해진 순서 배열
-    # 첫번째 or 두번째
-    # 몇번째꺼 추가?
     if len(subject) * 2  == len(cur_subject):
         subject_list.append(cur_subject)
         return
