@@ -36,7 +36,7 @@ def solution(n, weak, dist):
                         cur_weak_list.append(new_bit_weak)
                         break
                 if new_bit_weak == target_bit:
-                    return dist_cnt
+                    return dist_cnt + 1
         prev_weak_list = set(cur_weak_list)
         cur_weak_list = []
     return -1
